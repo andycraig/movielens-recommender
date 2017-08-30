@@ -1,0 +1,3 @@
+movies: ../data/ml-1m/movies.dat
+ratings: ../data/ml-1m/ratings.dat
+users.dat: ../data/ml-1m/ratings.dat
