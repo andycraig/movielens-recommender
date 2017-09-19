@@ -1,3 +1,5 @@
-movies: ../data/ml-1m/movies.dat
-ratings: ../data/ml-1m/ratings.dat
-users.dat: ../data/ml-1m/ratings.dat
+movies_file: ../data/ml-1m/movies.dat
+ratings_file: ../data/ml-1m/ratings.dat
+users_file: ../data/ml-1m/users.dat
+NMF:
+  n_components: 5
