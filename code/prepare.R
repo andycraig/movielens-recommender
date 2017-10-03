@@ -27,7 +27,7 @@ if (n_movies < max(ratings_df$MovieID)) {
 
 # Convert to matrix.
 ratings_mat = ratings_df %$% 
-  Matrix::sparseMatrix(i = UserID, j = MovieRow, x = Rating) %>% # i: row; j: col
+  Matrix::sparseMatrix(i = MovieRow, j = UserID, x = Rating) %>% # i: row; j: col
   as.matrix()
 
 # Factorise matrix.
@@ -35,10 +35,10 @@ svd_object = softImpute::softImpute(ratings_mat,
                                     rank.max = config[["NMF"]][["n_components"]])
 
 # Check outputs are the expected size.
-assertthat::are_equal(n_users, nrow(svd_object$u))
-assertthat::are_equal(n_movies, nrow(svd_object$v))
+assertthat::are_equal(n_movies, nrow(svd_object$u))
+assertthat::are_equal(n_users, nrow(svd_object$v))
 
 # Save output.
-write(svd_object$u, config[["factorised_users_file"]])
-write(svd_object$v, config[["factorised_movies_file"]])
+write(svd_object$u, config[["factorised_movies_file"]])
+write(svd_object$v, config[["factorised_users_file"]])
 write(t(svd_object$d), config[["factorised_diag_file"]])
