@@ -1,8 +1,14 @@
 import numpy as np
 
-class recommender:
+class Recommender:
 
 	def __init__(self, U, V, S):
+		"""
+			Args:
+				U: Matrix.
+				V: Matrix. Updates are made to this.
+				S: Vector.
+		"""
 		self.U = U
 		self.V = V
 		self.S = S # Vector. Matrix is np.diag(self.S).
