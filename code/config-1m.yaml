@@ -1,4 +1,5 @@
-movies_file: ../data/ml-1m/movies.dat
+movies_dat: ../data/ml-1m/movies.dat
+movies_csv: ../data/ml-1m/movies.csv
 ratings_dat: ../data/ml-1m/ratings.dat
 ratings_csv: ../data/ml-1m/ratings.csv
 users_file: ../data/ml-1m/users.dat

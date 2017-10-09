@@ -19,8 +19,10 @@ class Recommender:
 	def predict_for_new_v(self, new_v):
 		"""
 			Args:
-				new_v: Column matrix representing ratings for new column of ratings matrix.
+				new_v: Vector representing ratings for new column of ratings matrix.
 		"""
+		if len(new_v) != len(self.U):
+			raise ValueError("new_v (length " + str(len(new_v)) + ") have same length as rows of U (which is " + str(len(self.U)) + ").")
 		# If haven't already done so for this new_v, do rank-one update.
 		if self.new_v == None or not (self.new_v == new_v).all():
 			self._rank_one_update(new_v)

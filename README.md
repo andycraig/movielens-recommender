@@ -4,11 +4,13 @@ Processes the MovieLens dataset for use in a recommender system, and provides fu
 
 ### Preprocessing
 
-Do ratings matrix factorisation with:
+Prepare files and perform ratings matrix factorisation with:
 
 ```
-cd code
-Rscript prepare.R config-1m.yaml
+sed 's/\:\:/,/g' data/ml-1m/ratings.dat > data/ml-1m/ratings.csv
+Next line doesn't work:
+sed 's/\:\:(.*)\:\:/,"\1",/g' data/ml-1m/movies.dat > data/ml-1m/movies.csv
+Rscript code/prepare.R code/config-1m.yaml
 ```
 
 ### Predicting
