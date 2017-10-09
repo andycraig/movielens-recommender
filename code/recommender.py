@@ -9,8 +9,8 @@ class Recommender:
 				V: Matrix. Updates are made to this.
 				S: Vector.
 		"""
-		self.U = U
-		self.V = V
+		self.U = np.matrix(U)
+		self.V = np.matrix(V)
 		self.diag_S = np.diag(S)
 		self.new_v = None
 		# Precompute U_transpose.
@@ -37,18 +37,18 @@ class Recommender:
 
 			Args:
 				a: Column matrix to be appended. Can have missing values.
+
 		"""
+		print("In _rank_one_update")
 		mask_nas = np.isnan(c)
-		missing_indices = np.where(mask_nas)
-		not_missing_indices = np.where(~mask_nas)
 		# Following notation in paper:
 		# c_closed (filled circle): vector of known values in c.
 		# c_open (open circle): vector of unknown values in c.
 		# U_closed, U_open: corresponding rows of U.
-		c_closed = c[not_missing_indices]
-		c_open = c[missing_indices]
-		U_closed = self.U[not_missing_indices, :]
-		U_open = self.U[missing_indices, :]
+		c_closed = np.transpose(np.matrix(c[~mask_nas]))
+		c_open = c[mask_nas]
+		U_closed = self.U[~mask_nas, :]
+		U_open = self.U[mask_nas, :]
 		# Impute missing values.
 		#c_hat = (U_open * self.diag_S) * np.linalg.pinv(U_closed * self.diag_S) * c_closed
 		# Compute broken-arrow matrix (called K in Brand 2006, although not in this paper).
@@ -56,5 +56,6 @@ class Recommender:
 		K = [[self.diag_S, upper_right_block],
 			 [0, np.linalg.norm(c_closed - U_closed * upper_right_block)]]
 		# Rediagonalise K to get U'^T K V' = S'.
+		#TODO Fix this.
 		self.U_prime, _, self.V_prime  = np.linalg.svd(K)
 		# Now [X c] = U' S' V'^T = ([U P] U') S' ([V Q] V')^T

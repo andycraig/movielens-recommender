@@ -14,18 +14,22 @@ class MovieLensRecommender:
 									S = factorised_diag)
 
 	def ratings_dict_to_column(self, x):
-		"""
+		"""Convert movie titles and ratings to column vector that can be passed to the recommender.
 			Args:
 				x: dict. Keys are movie titles, values are ratings.
 			Return: Vector with same length as self.recomender.U.
 		"""
-		# Convert new_user_ratings, which is by MovieID, to by MovieRow.
+		# Convert dict to data frame.
 		x_df = pd.DataFrame.from_dict(x, orient='index')
-				.assign(title=x_df.index, rating=0)
-				.join(self.movie_df, by='title')
+		x_df = x_df.assign(Title=x_df.index, rating=x_df[0])
+		# Merge to get MovieRows.
+		x_df = x_df.merge(self.movie_df, on='Title')
+		# Create column vector, with entries corresponding to MovieRows as appropriate ratings
+		# and nans elsewhere.
 		ratings_col = np.empty(len(self.movie_df))
 		ratings_col[:] = np.nan
-		ratings_col[x_df['MovieRow']] = x_df['rating']
+		ratings_col[list(x_df['MovieRow'] - 1)] = x_df['rating'] # MovieRow is 1-indexed.
+		return ratings_col
 
 	def get_predictions(self, new_user_ratings):
 		"""
@@ -33,8 +37,8 @@ class MovieLensRecommender:
 				new_new_ratings: dict. Keys are titles, values are ratings.
 		"""
 		# Make a prediction.
-		predictions = self.recommender.predict_for_new_v(ratings_dict_to_column(new_user_ratings))
+		new_user_ratings_column = self.ratings_dict_to_column(new_user_ratings)
+		predictions = self.recommender.predict_for_new_v(new_user_ratings_column)
 		# predictions is a vector corresponding to MovieRow.
 		# Convert to title.
 		#TODO Make sure this returns a copy.
-		

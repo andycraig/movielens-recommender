@@ -6,7 +6,7 @@ args = commandArgs()
 config = yaml::yaml.load_file(args[[1]])
 
 # Load movies data.
-movies_df = readr::read_csv(config[["movies_csv"]], col_names = c("MovieID", "TitleYear", "Genre"))
+movies_df = readr::read_csv(config[["movies_csv"]], col_names = c("MovieID", "Title", "Year", "Genre"))
 
 # Load ratings data.
 ratings_df = readr::read_csv(config[["ratings_csv"]],
