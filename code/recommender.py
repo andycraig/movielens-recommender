@@ -37,6 +37,8 @@ class Recommender:
         U_closed = self.U[~mask_nas, :] # Shape: n_non_missing x r.
         U_open = self.U[mask_nas, :] # Shape: n_missing x r.
         # Impute missing values.
+        temp = self.diag_S * np.linalg.pinv(U_closed * self.diag_S) * c_closed
+        c_hat_open = U_open * temp
         # Compute broken-arrow matrix (called K in Brand 2006, although not in this paper).
         upper_left_block = self.diag_S # Shape: r x r
         upper_right_block = self.diag_S * np.linalg.pinv(U_closed * self.diag_S) * c_closed
@@ -56,11 +58,9 @@ class Recommender:
         P = p / np.linalg.norm(p)
 		# TODO Simplify this, since b has only one non-zero element.
         b = np.vstack([np.matrix(np.zeros([self.V.shape[0] - 1, 1])), np.ones([1, 1])])
-        n = self.V_transpose * b
-        q = b - self.V * n
-        Q = q / np.linalg.norm(q)
+        # q and Q are both equal to b.
         U_double_prime = np.hstack([self.U, P]) * U_prime
-        V_double_prime = np.hstack([self.V, Q]) * V_prime
+        V_double_prime = np.hstack([self.V, b]) * V_prime
         # Dot product of new_v's projection into latent V space (which is last row of V_double_prime)
         # with latent U space.
         predictions = U_double_prime * np.transpose(V_double_prime[-1, :])
