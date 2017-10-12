@@ -42,3 +42,4 @@ class MovieLensRecommender:
 		# predictions is a vector corresponding to MovieRow.
 		# Convert to title.
 		#TODO Make sure this returns a copy.
+		return predictions

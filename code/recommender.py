@@ -13,40 +13,27 @@ class Recommender:
         self.V = np.matrix(V)
         self.diag_S = np.diag(S)
         self.new_v = None
-        # Precompute U_transpose.
+        # Precompute transposes.
         self.U_transpose = self.U.transpose()
+        self.V_transpose = self.V.transpose()
 
     def predict_for_new_v(self, new_v):
-        """
-            Args:
-                new_v: Vector representing ratings for new column of ratings matrix.
-        """
-        if len(new_v) != len(self.U):
-            raise ValueError("new_v (length " + str(len(new_v)) + ") have same length as rows of U (which is " + str(len(self.U)) + ").")
-        # If haven't already done so for this new_v, do rank-one update.
-        if self.new_v == None or not (self.new_v == new_v).all():
-            self._rank_one_update(new_v)
-        # Dot product of new_v's projection into latent V space (which is last row of V_prime)
-        # with latent U space.
-        predictions = self.U_prime * self.V_prime[-1, :]
-        return predictions
-
-    def _rank_one_update(self, c):
         """Using method from Brand 'Fast online SVD revisions for lightweight recommender systems',
         Section B.1.
 
             Args:
-                a: Column matrix to be appended. Can have missing values.
-
+                new_v: Vector representing ratings for new column of ratings matrix. Can have missing values.
         """
-        print("In _rank_one_update")
-        mask_nas = np.isnan(c)
+        if len(new_v) != len(self.U):
+            raise ValueError("new_v (length " + str(len(new_v)) + ") have same length as rows of U (which is " + str(len(self.U)) + ").")
+        c = np.matrix(new_v).transpose() # Column matrix.
+        mask_nas = np.isnan(new_v)
         # Following notation in paper:
         # c_closed (filled circle): vector of known values in c.
         # c_open (open circle): vector of unknown values in c.
         # U_closed, U_open: corresponding rows of U.
-        c_closed = np.transpose(np.matrix(c[~mask_nas])) # Shape: n_non_missing x 1.
-        c_open = c[mask_nas] # Shape: n_missing x 1.
+        c_closed = c[~mask_nas, :] # Shape: n_non_missing x 1.
+        c_open = c[mask_nas, :] # Shape: n_missing x 1.
         U_closed = self.U[~mask_nas, :] # Shape: n_non_missing x r.
         U_open = self.U[mask_nas, :] # Shape: n_missing x r.
         # Impute missing values.
@@ -64,13 +51,17 @@ class Recommender:
         # Note that diag(S'') and diag(s') are the same.
         # Now [X c] = U' S' V'^T = ([U P] U') S' ([V Q] V')^T
         # Need to compute P, Q.
-		# TODO Simplify this, since one of a and b has only one non-zero element.
-        m = np.transpose(self.U) * a
-        p = a - self.U * m 
-        P = p / np.norm(p)
-        n = np.transpose(self.V) * b
+        m = self.U_transpose * c # c is a in Appendix A.
+        p = c - self.U * m # c is a in Appendix A.
+        P = p / np.linalg.norm(p)
+		# TODO Simplify this, since b has only one non-zero element.
+        b = np.vstack([np.matrix(np.zeros([self.V.shape[0] - 1, 1])), np.ones([1, 1])])
+        n = self.V_transpose * b
         q = b - self.V * n
-        Q = q / np.norm(q)
-        U_double_prime = np.hstack(self.U, P) * U_prime
-        V_double_prime = np.hstack(self.V, Q) * V_prime
-		# TODO Do something with this.
+        Q = q / np.linalg.norm(q)
+        U_double_prime = np.hstack([self.U, P]) * U_prime
+        V_double_prime = np.hstack([self.V, Q]) * V_prime
+        # Dot product of new_v's projection into latent V space (which is last row of V_double_prime)
+        # with latent U space.
+        predictions = U_double_prime * np.transpose(V_double_prime[-1, :])
+        return predictions
