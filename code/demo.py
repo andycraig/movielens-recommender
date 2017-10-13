@@ -9,10 +9,12 @@ m = MovieLensRecommender(config)
 movies_df = pd.read_csv(config['movies_csv'])
 n_movies = len(movies_df)
 
-# Some random ratings.
-new_user_ratings = {'Jumanji':5, 'Waiting to Exhale':1, 'Sudden Death':4}
+# Some random ratings. See if we can get it to recommend action movies.
+new_user_ratings = {'Die Hard':5, 'Terminator':5, 'Speed':5}
 print("Ratings for new user:")
 print(new_user_ratings)
 predictions_df = m.get_predictions(new_user_ratings)
 print("Top predictions for this user:")
 print(predictions_df.sort_values('prediction', ascending=False).head())
+print("Worst movies for this user:")
+print(predictions_df.sort_values('prediction', ascending=True).head())
