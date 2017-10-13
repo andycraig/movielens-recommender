@@ -8,8 +8,8 @@ Prepare files and perform ratings matrix factorisation with:
 
 ```
 sed 's/\:\:/,/g' data/ml-1m/ratings.dat > data/ml-1m/ratings.csv
-Next line doesn't work. Also should add header.
-sed -n 's;\([0-9]*\)::\(.*\) (\([0-9]*\))::\(.*\);\1,\2,\3,\4;p' data/ml-1m/movies.dat > data/ml-1m/movies.csv
+echo "MovieID,Title,Year,Genre" > data/ml-1m/movies.csv
+sed -n 's;\([0-9]*\)::\(.*\) (\([0-9]*\))::\(.*\);\1,\2,\3,\4;p' data/ml-1m/movies.dat >> data/ml-1m/movies.csv
 Rscript code/prepare.R code/config-1m.yaml
 ```
 
