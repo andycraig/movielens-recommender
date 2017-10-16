@@ -32,9 +32,12 @@ MovieID_and_row %>% readr::write_csv(config[["MovieID_and_row_file"]])
 ratings_df = ratings_df %>% dplyr::left_join(MovieID_and_row)
 
 # Convert to matrix.
-ratings_mat = ratings_df %$%
-  Matrix::sparseMatrix(i = MovieRow, j = UserID, x = Rating) %>% # i: row; j: col
-  as.matrix()
+matrix_by_indices = function(i, j, x, bg, nrow=length(unique(i)), ncol=length(unique(j)))
+  matrix(bg, nrow = nrow, ncol = ncol) %>%
+  `[<-`(cbind(i, j), x)
+
+ratings_mat = ratings_df %$% matrix_by_indices(MovieRow, UserID, Rating,
+                     bg=NA, nrow = n_movies, ncol = n_users)
 
 # Factorise matrix.
 svd_object = softImpute::softImpute(ratings_mat,
