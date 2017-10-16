@@ -1,6 +1,6 @@
 library(magrittr)
 
-args = commandArgs()
+args = commandArgs(trailingOnly = TRUE)
 
 # Load config.
 config = yaml::yaml.load_file(args[[1]])
@@ -48,7 +48,7 @@ assertthat::are_equal(n_movies, nrow(svd_object$u))
 assertthat::are_equal(n_users, nrow(svd_object$v))
 
 # Save output.
-write(svd_object$u, config[["factorised_movies_file"]])
-write(svd_object$v, config[["factorised_users_file"]])
-write(t(svd_object$d), config[["factorised_diag_file"]])
+svd_object$u %>% write(config[["factorised_movies_file"]], ncolumns = ncol(.))
+svd_object$v %>% write(config[["factorised_users_file"]], ncolumns = ncol(.))
+svd_object$d %>% t() %>% write(config[["factorised_diag_file"]], ncolumns = ncol(.))
 

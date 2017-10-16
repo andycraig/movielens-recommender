@@ -4,7 +4,7 @@ ratings_dat: ../data/ml-1m/ratings.dat
 ratings_csv: ../data/ml-1m/ratings.csv
 users_file: ../data/ml-1m/users.dat
 NMF:
-  n_components: 2
+  n_components: 5
 factorised_users_file: ../data/ml-1m/factorised_users_file.txt
 factorised_movies_file: ../data/ml-1m/factorised_movies_file.txt
 factorised_diag_file: ../data/ml-1m/factorised_diag_file.txt
