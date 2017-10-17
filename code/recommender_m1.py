@@ -4,11 +4,16 @@ import pandas as pd
 
 class MovieLensRecommender:
 
-    def __init__(self, config):
-        factorised_users = np.loadtxt(config['factorised_users_file'])
-        factorised_movies = np.loadtxt(config['factorised_movies_file'])
-        factorised_diag = np.loadtxt(config['factorised_diag_file'])
-        self.movie_df = pd.read_csv(config['MovieID_and_row_file'])
+    def __init__(self, factorised_movies, factorised_users, factorised_diag, movie_df):
+        """
+            Args:
+                factorised_movies: u x r matrix.
+                factorised_users: v x r matrix.
+                factorised_diag: r x 1 matrix.
+                movie_df: pandas DataFrame with u rows and columns MovieRow, Title, Year. 
+                          May have other columns too. 
+        """
+        self.movie_df = movie_df
         self.recommender = Recommender(U = factorised_movies,
                                     V = factorised_users,
                                     S = factorised_diag)

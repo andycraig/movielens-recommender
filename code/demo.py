@@ -5,7 +5,15 @@ import yaml
 with open("config-1m.yaml") as f:
     config = yaml.load(f)
 
-m = MovieLensRecommender(config)
+factorised_users = np.loadtxt(config['factorised_users_file'])
+factorised_movies = np.loadtxt(config['factorised_movies_file'])
+factorised_diag = np.loadtxt(config['factorised_diag_file'])
+movie_df = pd.read_csv(config['MovieID_and_row_file'])
+
+m = MovieLensRecommender(factorised_users=factorised_users,
+                         factorised_movies=factorised_movies,
+                         factorised_diag=factorised_diag,
+                         movie_df=movie_df)
 movies_df = pd.read_csv(config['movies_csv'])
 n_movies = len(movies_df)
 
