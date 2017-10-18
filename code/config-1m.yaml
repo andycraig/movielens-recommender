@@ -9,7 +9,7 @@ factorised_users_file: ../data/ml-1m/factorised_users_file.txt
 factorised_movies_file: ../data/ml-1m/factorised_movies_file.txt
 factorised_diag_file: ../data/ml-1m/factorised_diag_file.txt
 MovieID_and_row_file: ../data/ml-1m/MovieID_and_row.csv
-factorised_users_py: ../data/ml-1m/factorised_users_file.py
-factorised_movies_py: ../data/ml-1m/factorised_movies_file.py
-factorised_diag_py: ../data/ml-1m/factorised_diag_file.py
-MovieIE_and_row_py: ../data/ml-1m/MovieID_and_row.py
+factorised_users_py: pydata/factorised_users.py
+factorised_movies_py: pydatafactorised_movies.py
+factorised_diag_py: pydata/factorised_diag.py
+MovieID_and_row_py: pydata/MovieID_and_row.py
