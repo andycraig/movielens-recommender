@@ -13,3 +13,6 @@ factorised_users_py: ../data/ml-1m/factorised_users_file.py
 factorised_movies_py: ../data/ml-1m/factorised_movies_file.py
 factorised_diag_py: ../data/ml-1m/factorised_diag_file.py
 MovieIE_and_row_py: ../data/ml-1m/MovieID_and_row.py
+movies_for_database: ../data/ml-1m/movies_for_database.csv
+diag_for_database: ../data/ml-1m/diag_for_database.csv
+

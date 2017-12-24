@@ -36,11 +36,6 @@ MovieID_and_row = unique(ratings_df$MovieID) %>%
   tibble::tibble(MovieID = .,
                  MovieRow = 1:length(.)) 
 
-# Add MovieRow to title and save.
-MovieID_and_row %>%
-  dplyr::inner_join(movies_df, by = "MovieID") %>%  # Add details of movies that are in the ratings file.
-  readr::write_csv(config[["MovieID_and_row_file"]])
-
 # Helper function for conversion to matrix.
 matrix_by_indices = function(i, j, x, bg, nrow=length(unique(i)), ncol=length(unique(j)))
   matrix(bg, nrow = nrow, ncol = ncol) %>%
@@ -66,5 +61,13 @@ message("Saving results...")
 svd_object$u %>% write(config[["factorised_movies_file"]], ncolumns = ncol(.))
 svd_object$v %>% write(config[["factorised_users_file"]], ncolumns = ncol(.))
 svd_object$d %>% t() %>% write(config[["factorised_diag_file"]], ncolumns = ncol(.))
+# Write file with movie titles and factorised values.
+svd_object$u %>% 
+  dplyr::as_data_frame() %>%
+  `names<-`(paste0("latent", seq(1, ncol(.)))) %>%
+  dplyr::mutate(MovieRow = 1:nrow(.)) %>% 
+  dplyr::inner_join(MovieID_and_row, by = "MovieRow") %>% 
+  dplyr::inner_join(movies_df, by = "MovieID") %>%  # Add details of movies that are in the ratings file.
+  readr::write_csv(config[["movies_for_database"]])
 
 message("Done.")
