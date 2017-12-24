@@ -1,3 +1,8 @@
-data/
 code/__pycache__/
 code/.Rhistory
+code/.Rprofile
+code/packrat/init.R
+code/packrat/packrat.opts
+code/packrat/src/
+code/env/
+data/ml-1m/*
